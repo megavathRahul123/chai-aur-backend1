@@ -11,7 +11,14 @@ dotenv.config({
 })
 
 connectDB() // this is the function which is used to connect the db
-
+.then(()=>{
+    app.listen(process.env.PORT,()=>{ // this is the function which is used to listen the port
+        console.log(`app is litening on PORT ${process.env.PORT}`) // this is the message which is printed on the console
+    })
+})
+.catch((error)=>{
+    console.log("ERROR",error) // this is the error message which is printed on the console
+})
 
 
 
