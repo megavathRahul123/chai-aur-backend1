@@ -4,8 +4,8 @@ class Apierror extends Error {
     constructor(
         statusCode, 
         message="something went wrong",
-    errors=[],
-    statck = ""
+    errors=[],  //mulltiple errors
+    statck = ""   //error stact
         
     ){
     super(message)   //over write the message
