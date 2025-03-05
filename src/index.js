@@ -5,6 +5,9 @@ so we have to create the .env file in the root directory
  */
 import dotenv from "dotenv"
 import connectDB from "./db/index.js"
+import express from "express"
+
+const app = express()
 
 dotenv.config({ 
     path:'.env' // this is the path of the .env file
@@ -19,6 +22,7 @@ connectDB() // this is the function which is used to connect the db
 .catch((error)=>{
     console.log("ERROR",error) // this is the error message which is printed on the console
 })
+
 
 
 

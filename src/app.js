@@ -19,3 +19,11 @@ app.use(express.static("public")); // this is the middleware which is used to se
 app.use(cookieParser()); // this is the middleware which is used to parse the cookies
 export default app;
 
+import userRouter from "./routes/user.router.js";   
+
+//routes decleration
+
+app.use("/api/v1/users",userRouter); // this is the middleware which is used to use the userRouter
+
+//localhost:5000/users
+
