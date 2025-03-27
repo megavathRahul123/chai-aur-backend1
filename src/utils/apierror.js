@@ -1,6 +1,6 @@
 //this is built because of API error handling
 
-class Apierror extends Error {
+class ApiError extends Error {
     constructor(
     statusCode, 
     message="something went wrong",//default message
@@ -26,7 +26,7 @@ class Apierror extends Error {
 }
 
 
-export default Apierror;
+export default ApiError;
 /*
 const error = new ApiError(404, "User not found");
 console.log(error.statusCode);      

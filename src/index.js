@@ -6,22 +6,22 @@ so we have to create the .env file in the root directory
 import dotenv from "dotenv"
 import connectDB from "./db/index.js"
 import express from "express"
-
-const app = express()
+import app from "./app.js";
+const PORT = process.env.PORT || 5000;
 
 dotenv.config({ 
     path:'.env' // this is the path of the .env file
 })
 
-connectDB() // this is the function which is used to connect the db
-.then(()=>{
-    app.listen(process.env.PORT,()=>{ // this is the function which is used to listen the port
-        console.log(`app is litening on PORT ${process.env.PORT}`) // this is the message which is printed on the console
-    })
-})
-.catch((error)=>{
-    console.log("ERROR",error) // this is the error message which is printed on the console
-})
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => { 
+      console.log(`app is listening on PORT ${PORT}`); 
+    });
+  })
+  .catch((error) => {
+    console.log("ERROR", error);
+  });
 
 
 
