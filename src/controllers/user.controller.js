@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js"
-import { User} from "../models/user.model.js"
+import { User } from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import  ApiResponse  from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
@@ -55,16 +55,21 @@ const registerUser = asyncHandler( async (req, res) => {
     //console.log(req.files);
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
+    console.log("avatarLocalPath: ", req.files?.avatar[0]?.path);
+    console.log("avatarLocalPath: ", avatarLocalPath);
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     let coverImageLocalPath;
+    // console.log("req.files: ", req.files);
+    // console.log("req.files.coverImage: ", Array.isArray(req.files.coverImage));
+    // console.log("req.files lenagth: ", req.files.coverImage.length);
     if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
         coverImageLocalPath = req.files.coverImage[0].path
     }
     
 
     if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is required")
+        throw new ApiError(400, "Avatar file is required 1")
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
@@ -158,9 +163,35 @@ const loginUser = asyncHandler(async (req, res) =>{
 
 })
 
+const logoutUser = asyncHandler(async(req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1 // this removes the field from document
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"))
+})
+
 
 export {
     registerUser,
     loginUser,
+    logoutUser,
     
 };

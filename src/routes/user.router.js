@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { verifyJWT } from '../middlewares/auth.middlewares.js';
 import { upload } from '../middlewares/multer.middleware.js'
-import { registerUser ,loginUser} from '../controllers/user.controller.js';
+import { registerUser ,loginUser,logoutUser} from '../controllers/user.controller.js';
 
  
 
@@ -22,11 +22,10 @@ router.post(
 );
 
 
-router.route("/login").post(loginUser)
- 
- //secured routes
- 
+router.route("/login").post(loginUser) 
 
+//secured routes
+router.route("/logout").post(verifyJWT,  logoutUser)
  
 
 
