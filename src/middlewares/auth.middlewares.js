@@ -1,30 +1,38 @@
-import  ApiError  from "../utils/ApiError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import ApiError from "../utils/ApiError.js";
 
 export const verifyJWT = asyncHandler(async(req, _, next) => {
     try {
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+        // Debug logs
+        console.log("Headers:", req.headers);
+        console.log("Cookies:", req.cookies);
         
-        // console.log(token);
+        const token = req.cookies?.accessToken || req.headers?.authorization?.split(" ")?.[1];
+        
+        console.log("Extracted token:", token);
+
         if (!token) {
-            throw new ApiError(401, "Unauthorized request")
+            throw new ApiError(401, "Unauthorized request - No token found");
         }
-    
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-    
-        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
-    
-        if (!user) {
-            
-            throw new ApiError(401, "Invalid Access Token")
+
+        try {
+            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            console.log("Decoded token:", decodedToken);
+
+            const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
+
+            if (!user) {
+                throw new ApiError(401, "Invalid Access Token - User not found");
+            }
+
+            req.user = user;
+            next();
+        } catch (error) {
+            throw new ApiError(401, "Invalid access token");
         }
-    
-        req.user = user;
-        next()
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid access token")
+        throw new ApiError(401, error?.message || "Invalid access token");
     }
-    
-})
+});
